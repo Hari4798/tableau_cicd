@@ -29,6 +29,9 @@ jobs:
           echo "TOKEN=${TOKEN}" >> $GITHUB_ENV
           echo "SITE_ID=${SITE_ID}" >> $GITHUB_ENV
           echo "Login done with success"
+
+          sleep 10
+          
       - name: Create project PRODUCTION
         run: |
           curl --location --request POST '${{ secrets.TABLEAU_URL }}/api/3.9/sites/${{ env.SITE_ID }}/projects' \
