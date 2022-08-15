@@ -31,10 +31,10 @@ jobs:
           echo "Login done with success"
 
           sleep 10
-          
+
       - name: Create project PRODUCTION
         run: |
-          curl --location --request POST '${{ secrets.TABLEAU_URL }}/api/3.9/sites/${{ env.SITE_ID }}/projects' \
+          curl --location --request POST '${{ secrets.TABLEAU_URL }}/api/3.9/sites/a3484b85-e44d-4b6f-b799-6888e5b0ac4b/projects' \
           --header 'X-Tableau-Auth: ${{ env.TOKEN }}' \
           --header 'Content-Type: application/xml' \
           --data-raw '<tsRequest>
@@ -45,7 +45,7 @@ jobs:
           sleep 10s
       - name: Get project id
         run: |
-          curl --location --request GET '${{ secrets.TABLEAU_URL }}/api/3.9/sites/${{ env.SITE_ID }}/projects?filter=name:eq:${{ secrets.PRODUCTION_PROJECT }}' \
+          curl --location --request GET '${{ secrets.TABLEAU_URL }}/api/3.9/sites/a3484b85-e44d-4b6f-b799-6888e5b0ac4b/projects?filter=name:eq:${{ secrets.PRODUCTION_PROJECT }}' \
           --header 'X-Tableau-Auth: ${{ env.TOKEN }}' > project.xml
           PROJECT_ID=$(xpath -q -e "string(//project/@id)" project.xml)
           echo "PROJECT_ID=${PROJECT_ID}" >> $GITHUB_ENV
@@ -62,14 +62,14 @@ jobs:
           </tsRequest>
           EOF
           # creates a new one if not exists
-          curl -v --location --request POST '${{ secrets.TABLEAU_URL }}/api/3.4/sites/${{ env.SITE_ID }}/workbooks?overwrite=false' \
+          curl -v --location --request POST '${{ secrets.TABLEAU_URL }}/api/3.4/sites/a3484b85-e44d-4b6f-b799-6888e5b0ac4b/workbooks?overwrite=false' \
           -H "X-Tableau-Auth: ${{ env.TOKEN }}" \
           -H "Content-Type: multipart/mixed; boundary=boundary-string" \
           -F "request_payload=@publish-workbook.xml" \
           -F "tableau_workbook=@${{ secrets.WORKBOOK_FILE }}"
           sleep 10s
           # assure to upload latest version (overwriting)
-          curl -v --location --request POST '${{ secrets.TABLEAU_URL }}/api/3.4/sites/${{ env.SITE_ID }}/workbooks?overwrite=true' \
+          curl -v --location --request POST '${{ secrets.TABLEAU_URL }}/api/3.4/sites/a3484b85-e44d-4b6f-b799-6888e5b0ac4b/workbooks?overwrite=true' \
           -H "X-Tableau-Auth: ${{ env.TOKEN }}" \
           -H "Content-Type: multipart/mixed; boundary=boundary-string" \
           -F "request_payload=@publish-workbook.xml" \
